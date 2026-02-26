@@ -1,0 +1,19 @@
+# --- C++ Junk ---
+*.exe
+*.o
+*.obj
+*.out
+*.pdb
+build/
+bin/
+
+# --- Database Data (IMPORTANT) ---
+# This ignores your actual database files so they stay local
+data/
+*.db
+*.log
+*.tmp
+
+# --- OS Junk ---
+.DS_Store
+Thumbs.db
