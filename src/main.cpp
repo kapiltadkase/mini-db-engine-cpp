@@ -6,9 +6,9 @@ using namespace std;
 
 int main(){
     
-   ofstream file("tests/data.db", ios::binary | ios::app);
+   ofstream outFile("tests/data.db", ios::binary | ios::app);
    
-   if (!file) {
+   if (!outFile) {
     std::cout << "File failed to open\n";
    }
 
@@ -34,10 +34,26 @@ int main(){
    r3.isDeleted = false;
    
 
-   file.write(reinterpret_cast<char*>(&r1), sizeof(Record));
-   file.write(reinterpret_cast<char*>(&r2), sizeof(Record));
-   file.write(reinterpret_cast<char*>(&r3), sizeof(Record));
-   file.close();
+   outFile.write(reinterpret_cast<char*>(&r1), sizeof(Record));
+   outFile.write(reinterpret_cast<char*>(&r2), sizeof(Record));
+   outFile.write(reinterpret_cast<char*>(&r3), sizeof(Record));
+   outFile.close();
+
+   // Opening File for Reading
+   ifstream inFile("tests/data.db" ,ios::binary);
+
+   if (!inFile) {
+      std::cout << "Failed to open file for reading\n";
+      return 1;
+   }
+
+   Record r;   // temporary container to store value of record while reading from the file
+
+   while(inFile.read(reinterpret_cast<char*>(&r), sizeof(Record))){
+        cout << r.id << " "<< r.name << " "<< r.age << " "<< r.isActive <<endl;
+   }
+
+   inFile.close();
     
 
     return 0;
