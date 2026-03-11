@@ -55,7 +55,7 @@ Record Storage ::  readRecord(int index){
     Record r;
     
     // Fetching record using offset calculation
-    int offset = index * sizeof(Record);
+    auto offset = index * sizeof(Record);
 
     inFile.seekg(offset,std::ios::beg); // moves the file pointer
     // Now the pointer to the file is pointing to the record with at given index using the offset method
@@ -75,17 +75,21 @@ int Storage :: getRecordCount(){
         return 0;
     }
 
-    int FileSize = inFile.tellg();  //
+    auto fileSize = inFile.tellg();  //
     
     inFile.close();
 
 
-    return FileSize/sizeof(Record);
+    return fileSize/sizeof(Record);
 
 }
 
 
 void Storage :: updateRecord(int index, const Record& record){
+    if(index >= getRecordCount()){
+        std::cout << "Invalid index\n";
+        return;
+    }
     // Opening File in read mode (binary)
     std:: fstream File(filename,std::ios::binary | std::ios::in | std::ios::out);
 
@@ -95,9 +99,9 @@ void Storage :: updateRecord(int index, const Record& record){
         return;
     }
     
-    int offset = index * sizeof(Record);
+    auto offset = index * sizeof(Record);
     
-    File.seekg(offset,std::ios::beg);
+    File.seekp(offset,std::ios::beg);
 
     File.write(reinterpret_cast<const char*>(&record),sizeof(Record));
 
@@ -105,6 +109,10 @@ void Storage :: updateRecord(int index, const Record& record){
 }
 
 void Storage :: deleteRecord(int index){
+    if(index >= getRecordCount()){
+        std::cout << "Invalid index\n";
+        return;
+    }
     Record r = readRecord(index);
     r.isActive = false;
 
