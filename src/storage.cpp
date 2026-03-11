@@ -35,7 +35,9 @@ void Storage :: printAllRecords(){
     Record r;
     
     while(inFile.read(reinterpret_cast<char*>(&r),sizeof(Record))){
-        std::cout<<r.id<<" "<<r.name<<" "<<r.age<<" "<<r.isActive<<std::endl;
+        if(r.isActive == true){
+           std::cout<<r.id<<" "<<r.name<<" "<<r.age<<" "<<r.isActive<<std::endl; 
+        }
     }
 
     inFile.close();
