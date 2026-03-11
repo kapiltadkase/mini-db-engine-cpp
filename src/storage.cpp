@@ -66,7 +66,7 @@ Record Storage ::  readRecord(int index){
     return r;
 }
 
-long long Storage :: getRecordCount(){
+int Storage :: getRecordCount(){
     // Opening File in read mode (opening at the end)
     std::ifstream inFile(filename , std::ios::binary | std::ios::ate);
     
@@ -75,11 +75,31 @@ long long Storage :: getRecordCount(){
         return 0;
     }
 
-    long long FileSize = inFile.tellg();  //
+    int FileSize = inFile.tellg();  //
     
     inFile.close();
 
 
     return FileSize/sizeof(Record);
 
+}
+
+
+void Storage :: updateRecord(int index, const Record& record){
+    // Opening File in read mode (binary)
+    std:: fstream File(filename,std::ios::binary | std::ios::in | std::ios::out);
+
+    if (!File)
+    {
+        std::cout<<"Failed to open File\n";
+        return;
+    }
+    
+    int offset = index * sizeof(Record);
+    
+    File.seekg(offset,std::ios::beg);
+
+    File.write(reinterpret_cast<const char*>(&record),sizeof(Record));
+
+    File.close();
 }

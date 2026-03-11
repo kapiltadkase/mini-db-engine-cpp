@@ -18,7 +18,10 @@ class Storage{
 
     void printAllRecords();
 
-    long long getRecordCount();
+    int getRecordCount();
+
+    void updateRecord(int index, const Record& record);
+
 
 };
 
