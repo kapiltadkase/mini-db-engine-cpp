@@ -86,7 +86,7 @@ int Storage :: getRecordCount(){
 
 
 void Storage :: updateRecord(int index, const Record& record){
-    if(index >= getRecordCount()){
+    if(index < 0 || index >= getRecordCount()){
         std::cout << "Invalid index\n";
         return;
     }
@@ -109,7 +109,7 @@ void Storage :: updateRecord(int index, const Record& record){
 }
 
 void Storage :: deleteRecord(int index){
-    if(index >= getRecordCount()){
+    if(index < 0 || index >= getRecordCount()){
         std::cout << "Invalid index\n";
         return;
     }

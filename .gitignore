@@ -7,7 +7,7 @@
 build/
 bin/
 
-# --- Database Data (IMPORTANT) ---
+# --- Database Data---
 # This ignores your actual database files so they stay local
 data/
 *.db
