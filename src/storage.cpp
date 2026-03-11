@@ -103,3 +103,10 @@ void Storage :: updateRecord(int index, const Record& record){
 
     File.close();
 }
+
+void Storage :: deleteRecord(int index){
+    Record r = readRecord(index);
+    r.isActive = false;
+
+    updateRecord(index,r);
+}
