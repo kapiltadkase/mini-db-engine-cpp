@@ -26,7 +26,7 @@ int main(){
       std::stringstream ss(input);
       std::string command;
       
-      // 2. Identification of Command (list, insert, read, delete, count)
+      // 2. Identification of Command (list, insert, read, delete, update, count, totalCount)
       ss >> command;     // Extracted first token
       
       if(command=="list"){
@@ -73,9 +73,15 @@ int main(){
       }
       else if(command == "count"){
 
-         int count = storage.getRecordCount();
+         int count = storage.getActiveRecordCount();
 
-         std::cout<<"Total Records: "<<count<<std::endl;
+         std::cout<<"Total Active Records: "<<count<<std::endl;
+      }
+      else if(command == "totalCount"){
+
+         int totalCount = storage.getRecordCount();
+         
+         std::cout<<"Total Record Count: "<<totalCount<<std::endl;
       }
       else if(command == "update"){
          int index;
@@ -101,6 +107,9 @@ int main(){
 
          std::cout<<"Record Updated\n";
 
+      }
+      else{
+         std::cout<<"INVALID COMMAND\n";
       }
       
 

@@ -18,11 +18,14 @@ class Storage{
 
     void printAllRecords();
 
+    int getActiveRecordCount();
+
     int getRecordCount();
 
     void updateRecord(int index, const Record& record);
     
     void deleteRecord(int index);
+
 
 };
 

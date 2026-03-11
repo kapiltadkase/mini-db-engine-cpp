@@ -86,6 +86,28 @@ int Storage :: getRecordCount(){
 
 }
 
+int Storage :: getActiveRecordCount(){
+     // Opening File in read mode
+    std::ifstream inFile(filename , std::ios::binary);
+    
+    if(!inFile){
+        std::cout<<"Failed to open file\n";
+        return 0;
+    }
+
+    Record r;
+    int count = 0;
+    while(inFile.read(reinterpret_cast<char*> (&r),sizeof(Record))){
+        if(r.isActive){
+            count++;
+        }
+    }
+    
+    inFile.close();
+
+    return count;
+}
+
 
 void Storage :: updateRecord(int index, const Record& record){
     if(index < 0 || index >= getRecordCount()){
