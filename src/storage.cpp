@@ -65,3 +65,21 @@ Record Storage ::  readRecord(int index){
 
     return r;
 }
+
+long long Storage :: getRecordCount(){
+    // Opening File in read mode (opening at the end)
+    std::ifstream inFile(filename , std::ios::binary | std::ios::ate);
+    
+    if(!inFile){
+        std::cout<<"Failed to open file\n";
+        return 0;
+    }
+
+    long long FileSize = inFile.tellg();  //
+    
+    inFile.close();
+
+
+    return FileSize/sizeof(Record);
+
+}

@@ -18,7 +18,7 @@ class Storage{
 
     void printAllRecords();
 
-    int getRecordCount();
+    long long getRecordCount();
 
 };
 
