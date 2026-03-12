@@ -12,6 +12,9 @@ int main(){
    
    // Reading User input in a loop (CLI)
    std::string input;
+
+   int nextId = storage.getRecordCount() + 1;
+
    while(true){
       std::cout<<"MiniDB > ";
       std::getline(std::cin,input);
@@ -30,21 +33,26 @@ int main(){
       ss >> command;     // Extracted first token
       
       if(command=="list"){
+
          storage.printAllRecords();
+
       }
       else if(command=="insert"){
-         int id;
+
          std::string name;
          int age;
 
          // Extracting the rest of the token
-         if(!(ss >> id >> name >> age)){
-            std::cout<<"Usage insert <id> <name> <age>\n";
+         if(!(ss >> name >> age)){
+            std::cout<<"Usage insert <name> <age>\n";
          }
 
 
          Record r;
-         r.id = id;
+
+         r.id = nextId;
+         nextId++;     // So that every new record gets and unqiue id
+
          r.age = age;
          r.isActive = true;
 
@@ -124,6 +132,18 @@ int main(){
 
          std::cout<<"Record Updated\n";
 
+      }
+      else if(command == "help"){
+         std::cout << "Available commands:\n";
+         std::cout << "insert <name> <age>\n";
+         std::cout << "read <index>\n";
+         std::cout << "update <index> <name> <age>\n";
+         std::cout << "delete <index>\n";
+         std::cout << "list\n";
+         std::cout << "count\n";
+         std::cout << "totalCount\n";
+         std::cout << "exit\n";
+         
       }
       else{
          std::cout<<"Unknown command. Type 'help' to see available commands.\n";
