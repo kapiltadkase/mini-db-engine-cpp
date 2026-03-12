@@ -26,7 +26,7 @@ int main(){
       std::stringstream ss(input);
       std::string command;
       
-      // 2. Identification of Command (list, insert, read, delete, update, count, totalCount)
+      // 2. Identification of Command (list, insert, read, delete, update, activeCount, totalCount)
       ss >> command;     // Extracted first token
       
       if(command=="list"){
@@ -38,7 +38,10 @@ int main(){
          int age;
 
          // Extracting the rest of the token
-         ss >> id >> name >> age;
+         if(!(ss >> id >> name >> age)){
+            std::cout<<"Usage insert <id> <name> <age>\n";
+         }
+
 
          Record r;
          r.id = id;
@@ -54,10 +57,15 @@ int main(){
          int index;
          ss >> index;
 
+         if(index <= 0){
+            std::cout << "Invalid index\n";
+            continue;
+         }
+
          Record r = storage.readRecord(index-1);
 
          if(r.isActive == true){
-            std::cout<<r.id<<" "<<r.name<<" "<<r.age<<" "<<r.isActive<<std::endl;
+            std::cout<<r.id<<" "<<r.name<<" "<<r.age<<std::endl;
          }
          else{
             std::cout<<"Record is deleted or inactive\n";
@@ -65,13 +73,22 @@ int main(){
       }
       else if(command == "delete"){
          int index;
-         ss >> index;
+         
+         if(!(ss >> index)){
+            std::cout<<"Usage: delete <index>\n";
+            continue;
+         }
+
+         if(index <= 0){
+            std::cout << "Invalid index\n";
+            continue;
+         }
 
          storage.deleteRecord(index-1);   // 1-based indexing
          
          std::cout<<"Record deleted\n";
       }
-      else if(command == "count"){
+      else if(command == "activeCount"){
 
          int count = storage.getActiveRecordCount();
 
@@ -109,7 +126,7 @@ int main(){
 
       }
       else{
-         std::cout<<"INVALID COMMAND\n";
+         std::cout<<"Unknown command. Type 'help' to see available commands.\n";
       }
       
 

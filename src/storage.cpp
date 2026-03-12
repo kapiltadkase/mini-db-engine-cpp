@@ -114,7 +114,7 @@ void Storage :: updateRecord(int index, const Record& record){
         std::cout << "Invalid index\n";
         return;
     }
-    // Opening File in read mode (binary)
+    // Opening File in read mode and write mode (binary)
     std:: fstream File(filename,std::ios::binary | std::ios::in | std::ios::out);
 
     if (!File)
