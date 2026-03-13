@@ -1,6 +1,7 @@
 #include "../include/storage.h"
 #include <fstream>
 #include <iostream>
+#include <cstring>
 
 
 Storage :: Storage(std::string file){
@@ -141,4 +142,30 @@ void Storage :: deleteRecord(int index){
     r.isActive = false;
 
     updateRecord(index,r);
+}
+
+void Storage :: findByName(const std::string& name){
+    // Opening file in read mode
+    std::ifstream file(filename, std::ios::binary);
+
+    if(!file){
+        std::cout<<"Failed to open file\n";
+        return;
+    }
+
+    Record r;
+
+    bool found = false;
+    while(file.read(reinterpret_cast<char*>(&r),sizeof(Record))){
+        if(r.isActive && strcmp(r.name, name.c_str()) == 0){  // r.name is char[50] and name is string
+            std::cout<<r.id<<" "<<r.name<<" "<<r.age<<std::endl;
+            found = true;
+        }
+    }
+
+    if(!found){
+        std::cout<<"No record found\n";
+    }
+
+    file.close();
 }

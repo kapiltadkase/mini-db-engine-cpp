@@ -133,6 +133,16 @@ int main(){
          std::cout<<"Record Updated\n";
 
       }
+      else if(command == "find"){
+         std::string name;
+         if(!(ss >> name)){
+            std::cout<<"Usage: find <name>\n";
+            continue;
+         }
+         
+         storage.findByName(name);
+
+      }
       else if(command == "help"){
          std::cout << "Available commands:\n";
          std::cout << "insert <name> <age>\n";

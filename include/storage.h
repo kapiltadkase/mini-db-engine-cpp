@@ -26,6 +26,8 @@ class Storage{
     
     void deleteRecord(int index);
 
+    void findByName(const std::string& name);
+
 
 };
 
