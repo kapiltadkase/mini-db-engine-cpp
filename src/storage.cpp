@@ -6,6 +6,27 @@
 
 Storage :: Storage(std::string file){
     filename = file;
+    buildIndex();
+}
+
+void Storage :: buildIndex(){
+    // opening file for reading in binary mode
+    std::ifstream file(filename, std::ios::binary);
+
+    if(!file){
+        return;
+    }
+    
+    Record r;
+    int index = 0;
+    while(file.read(reinterpret_cast<char*> (&r),sizeof(Record))){
+        if(r.isActive){
+           nameIndex[r.name].push_back(index);
+        }
+        index++;
+    }
+
+    file.close();
 }
 
 void Storage :: insertRecord(const Record& record){
@@ -20,6 +41,9 @@ void Storage :: insertRecord(const Record& record){
     outFile.write(reinterpret_cast<const char*>(&record),sizeof(Record));
 
     outFile.close();
+
+    int index = getRecordCount()-1;
+    nameIndex[record.name].push_back(index);
     
 }
 
@@ -145,27 +169,20 @@ void Storage :: deleteRecord(int index){
 }
 
 void Storage :: findByName(const std::string& name){
-    // Opening file in read mode
-    std::ifstream file(filename, std::ios::binary);
-
-    if(!file){
-        std::cout<<"Failed to open file\n";
+    
+    if(nameIndex.find(name) == nameIndex.end()){
+        std::cout<<"No record found\n";
         return;
     }
 
-    Record r;
+    std::vector<int> positions = nameIndex[name];
 
-    bool found = false;
-    while(file.read(reinterpret_cast<char*>(&r),sizeof(Record))){
-        if(r.isActive && strcmp(r.name, name.c_str()) == 0){  // r.name is char[50] and name is string
+    for(int pos : positions){
+        Record r = readRecord(pos);
+
+        if(r.isActive){
             std::cout<<r.id<<" "<<r.name<<" "<<r.age<<std::endl;
-            found = true;
         }
     }
 
-    if(!found){
-        std::cout<<"No record found\n";
-    }
-
-    file.close();
 }

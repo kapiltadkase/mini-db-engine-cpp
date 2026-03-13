@@ -3,6 +3,8 @@
 
 #include <string>
 #include "../include/record.h"
+#include <unordered_map>
+#include <vector>
 
 class Storage{
     private:
@@ -27,6 +29,10 @@ class Storage{
     void deleteRecord(int index);
 
     void findByName(const std::string& name);
+
+    // Implementing hash index
+    std::unordered_map<std::string, std::vector<int>> nameIndex;
+    void buildIndex();
 
 
 };
