@@ -6,10 +6,13 @@
 #include <unordered_map>
 #include <vector>
 
+
+
 class Storage{
     private:
     std::string filename;
     int nextId;
+    std::string metaFile;
 
     public:
 
@@ -34,6 +37,9 @@ class Storage{
     // Implementing hash index
     std::unordered_map<std::string, std::vector<int>> nameIndex;
     void buildIndex();
+
+    void loadMetaData();
+    void saveMetaData();
 
 
 };

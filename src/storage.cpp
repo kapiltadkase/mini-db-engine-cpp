@@ -6,9 +6,39 @@
 
 Storage :: Storage(std::string file){
     filename = file;
-    buildIndex();
+    
+    metaFile = file + ".meta";
 
-    nextId = getRecordCount() + 1;
+    buildIndex();
+    
+    loadMetaData();
+}
+
+void Storage :: loadMetaData(){
+    std::ifstream file(metaFile);
+
+    if(!file){
+        // If file doesnt exist calculate nextId and create Meta data
+        nextId = getRecordCount() + 1;
+        saveMetaData();
+        return;
+    }
+    
+    file >> nextId;
+    file.close();
+
+}
+
+void Storage :: saveMetaData(){
+    std::ofstream file(metaFile);
+
+    if(!file){
+        std::cout<<"Failed to write metadata\n";
+    }
+
+    file <<  nextId;
+
+    file.close();
 }
 
 void Storage :: buildIndex(){
@@ -35,6 +65,9 @@ void Storage :: insertRecord(const std::string& name , int age){
    Record r;
 
    r.id = nextId++;
+   
+   saveMetaData();
+
    r.age = age;
    r.isActive = true;
 
@@ -68,7 +101,7 @@ void Storage :: printAllRecords(){
     
     while(inFile.read(reinterpret_cast<char*>(&r),sizeof(Record))){
         if(r.isActive == true){
-           std::cout<<r.id<<" "<<r.name<<" "<<r.age<<" "<<r.isActive<<std::endl; 
+           std::cout<<r.id<<" "<<r.name<<" "<<r.age<<" "<<std::endl; 
         }
     }
 

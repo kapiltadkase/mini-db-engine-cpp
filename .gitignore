@@ -9,10 +9,11 @@ bin/
 
 # --- Database Data---
 # This ignores your actual database files so they stay local
-data/
+tests/
 *.db
 *.log
 *.tmp
+*.meta
 
 # --- OS Junk ---
 .DS_Store
