@@ -7,6 +7,8 @@
 Storage :: Storage(std::string file){
     filename = file;
     buildIndex();
+
+    nextId = getRecordCount() + 1;
 }
 
 void Storage :: buildIndex(){
@@ -29,22 +31,27 @@ void Storage :: buildIndex(){
     file.close();
 }
 
-void Storage :: insertRecord(const Record& record){
-    // opening file in binary mode for writing
-    std::ofstream outFile(filename,std::ios::binary | std::ios::app);
-    if (!outFile)
-    {
-        std::cout<<"Failed to open the file for writing. \n";
-        return;
-    }
-    
-    outFile.write(reinterpret_cast<const char*>(&record),sizeof(Record));
+void Storage :: insertRecord(const std::string& name , int age){
+   Record r;
 
-    outFile.close();
+   r.id = nextId++;
+   r.age = age;
+   r.isActive = true;
 
-    int index = getRecordCount()-1;
-    nameIndex[record.name].push_back(index);
-    
+   strcpy(r.name , name.c_str());
+
+   // Opening file in write,binary and append  mode
+   std::ofstream outFile(filename, std::ios::binary | std::ios::app);
+
+   if(!outFile){
+        std::cout<<"Failed to open the file\n";
+   }
+
+   outFile.write(reinterpret_cast<char*>(&r),sizeof(Record));
+   outFile.close();
+
+   int index = getRecordCount() - 1;
+   nameIndex[r.name].push_back(index);
 }
 
 void Storage :: printAllRecords(){

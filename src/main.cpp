@@ -48,17 +48,7 @@ int main(){
          }
 
 
-         Record r;
-
-         r.id = nextId;
-         nextId++;     // So that every new record gets and unqiue id
-
-         r.age = age;
-         r.isActive = true;
-
-         strcpy(r.name, name.c_str());
-
-         storage.insertRecord(r);
+         storage.insertRecord(name,age);
          std::cout<<"Record Inserted\n";
       }
       else if(command == "read"){

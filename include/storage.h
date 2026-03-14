@@ -9,12 +9,13 @@
 class Storage{
     private:
     std::string filename;
+    int nextId;
 
     public:
 
     Storage(std::string file);
     // Just Declaring the function
-    void insertRecord(const Record& record);
+    void insertRecord(const std::string& name , int age);
 
     Record readRecord(int index);
 
