@@ -3,12 +3,15 @@
 #include <sstream>
 #include "../include/record.h"
 #include "../include/storage.h"
+#include "../include/database.h"
 
 
 
 int main(){
     
    Storage storage("tests/data.db");
+
+   Database db;
    
    // Reading User input in a loop (CLI)
    std::string input;
@@ -29,7 +32,7 @@ int main(){
       std::stringstream ss(input);
       std::string command;
       
-      // 2. Identification of Command (list, insert, read, delete, update, activeCount, totalCount)
+      // 2. Identification of Command (list, insert, read, delete, update, activeCount, totalCount, find, help)
       ss >> command;     // Extracted first token
       
       if(command=="list"){
@@ -133,6 +136,21 @@ int main(){
          storage.findByName(name);
 
       }
+      else if(command == "createTable"){
+
+         std::string tablename;
+
+         if(!(ss >> tablename)){
+            std::cout<<"Usage: createTable <tableName>\n";
+            continue;
+         }
+
+         db.createTable(tablename);
+
+      }
+      else if(command == "showTables"){
+         db.showTables();
+      }
       else if(command == "help"){
          std::cout << "Available commands:\n";
          std::cout << "insert <name> <age>\n";
@@ -142,6 +160,7 @@ int main(){
          std::cout << "list\n";
          std::cout << "count\n";
          std::cout << "totalCount\n";
+         std::cout<< "find <name>\n";
          std::cout << "exit\n";
          
       }
