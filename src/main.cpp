@@ -12,6 +12,7 @@ int main(){
    Storage storage("tests/data.db");
 
    Database db;
+   db.loadTables();
    
    // Reading User input in a loop (CLI)
    std::string input;

@@ -10,6 +10,9 @@ class Database{
         std::unordered_map<std::string, Storage*> tables;
 
     public:
+        
+        void loadTables();
+
         void createTable(const std::string& name);
         
         Storage* getTable(const std::string& name);

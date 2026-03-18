@@ -1,6 +1,37 @@
 #include "../include/database.h"
 #include <fstream>
 #include <iostream>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
+void Database :: loadTables(){
+    std::string folder = "tests";
+
+    if(!fs::exists(folder)){
+        std::cout<< "No tests folder found\n";
+        return;
+    }
+
+    for(const auto& entry : fs::directory_iterator(folder)){
+        if(!entry.is_regular_file()){
+            continue;
+        }
+
+        std::string filename = entry.path().filename().string();
+
+        if(filename.size() > 3 && filename.substr(filename.size() - 3)== ".db"){
+            std::string tableName = filename.substr(0,filename.size()-3);
+
+            std::string fullPath = folder + "/" + filename;
+
+            tables[tableName] = new Storage(fullPath);
+
+            std::cout<<"Loaded table: "<<tableName<<"\n";
+        }
+    }
+
+}
 
 
 void Database :: createTable(const std::string& name){
@@ -22,7 +53,6 @@ void Database :: createTable(const std::string& name){
 
     file.close();
 
-    std::cout<<"add table to map\n";
 
     tables[name] = new Storage(filename);  // Easy access to tables
 

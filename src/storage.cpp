@@ -9,6 +9,9 @@ Storage :: Storage(std::string file){
     
     metaFile = file + ".meta";
 
+    std::ofstream createFile(filename,std::ios::app);
+    createFile.close();
+
     buildIndex();
     
     loadMetaData();
@@ -77,7 +80,7 @@ void Storage :: insertRecord(const std::string& name , int age){
    std::ofstream outFile(filename, std::ios::binary | std::ios::app);
 
    if(!outFile){
-        std::cout<<"Failed to open the file\n";
+        std::cout<<"1.Failed to open the file\n";
    }
 
    outFile.write(reinterpret_cast<char*>(&r),sizeof(Record));
@@ -93,7 +96,7 @@ void Storage :: printAllRecords(){
 
     if (!inFile)
     {
-        std::cout<<"Failed to open the file for reading. \n";
+        std::cout<<"2.Failed to open the file for reading. \n";
         return;
     }
 
@@ -115,7 +118,7 @@ Record Storage ::  readRecord(int index){
     
     if (!inFile)
     {
-        std::cout<<"Failed to open file for reading \n";
+        std::cout<<"3.Failed to open file for reading \n";
         return Record();
     }
 
@@ -138,7 +141,7 @@ int Storage :: getRecordCount(){
     std::ifstream inFile(filename , std::ios::binary | std::ios::ate);
     
     if(!inFile){
-        std::cout<<"Failed to open file\n";
+        std::cout<<"4.Failed to open file\n";
         return 0;
     }
 
@@ -156,7 +159,7 @@ int Storage :: getActiveRecordCount(){
     std::ifstream inFile(filename , std::ios::binary);
     
     if(!inFile){
-        std::cout<<"Failed to open file\n";
+        std::cout<<"6.Failed to open file\n";
         return 0;
     }
 
@@ -184,7 +187,7 @@ void Storage :: updateRecord(int index, const Record& record){
 
     if (!File)
     {
-        std::cout<<"Failed to open File\n";
+        std::cout<<"7.Failed to open File\n";
         return;
     }
     
