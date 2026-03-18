@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring> 
 #include <sstream>
+#include <fstream> 
 #include "../include/record.h"
 #include "../include/storage.h"
 #include "../include/database.h"
@@ -12,7 +13,6 @@ int main(){
    Storage storage("tests/data.db");
 
    Database db;
-   db.loadTables();
    
    // Reading User input in a loop (CLI)
    std::string input;
@@ -35,8 +35,34 @@ int main(){
       
       // 2. Identification of Command (list, insert, read, delete, update, activeCount, totalCount, find, help)
       ss >> command;     // Extracted first token
-      
-      if(command=="list"){
+
+      if(command == "createTable"){
+         std:: string tableName;
+         ss>> tableName;
+
+         if(tableName.empty()){
+            std::cout<<"Usage: createTable <table_name>\n";
+            continue;
+         }
+         
+         std:: ofstream file("tests/" + tableName + ".db" , std::ios::binary);
+
+         if(!file){
+            std::cout<<"Failed to create table\n";
+         }
+         else{
+            std::cout<<"Table created\n";
+         }
+
+         file.close();
+
+         db.createTable(tableName);
+
+      }
+      else if(command == "showTables"){
+         db.showTables();
+      }
+      else if(command=="list"){
 
          storage.printAllRecords();
 

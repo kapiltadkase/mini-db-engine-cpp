@@ -11,6 +11,8 @@ class Database{
 
     public:
         
+        Database();
+
         void loadTables();
 
         void createTable(const std::string& name);

@@ -5,6 +5,10 @@
 
 namespace fs = std::filesystem;
 
+Database :: Database(){
+    loadTables();
+}
+
 void Database :: loadTables(){
     std::string folder = "tests";
 
