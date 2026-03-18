@@ -17,7 +17,7 @@ class Database{
 
         void createTable(const std::string& name);
         
-        Storage* getTable(const std::string& name);
+        Storage* getTable(const std::string& tableName);
         
         void showTables();
     

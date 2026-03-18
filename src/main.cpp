@@ -10,14 +10,12 @@
 
 int main(){
     
-   Storage storage("tests/data.db");
 
    Database db;
    
    // Reading User input in a loop (CLI)
    std::string input;
 
-   int nextId = storage.getRecordCount() + 1;
 
    while(true){
       std::cout<<"MiniDB > ";
@@ -63,34 +61,54 @@ int main(){
          db.showTables();
       }
       else if(command=="list"){
+         std::string tableName;
+         ss >> tableName;
 
-         storage.printAllRecords();
+         Storage* table = db.getTable(tableName);
+
+         if(!table){
+            std::cout<<"Table not found\n";
+            continue;
+         }
+
+         table->printAllRecords();
 
       }
       else if(command=="insert"){
 
-         std::string name;
+         std::string tableName ,name;
          int age;
 
          // Extracting the rest of the token
-         if(!(ss >> name >> age)){
+         if(!(ss >>tableName >> name >> age)){
             std::cout<<"Usage insert <name> <age>\n";
          }
 
+         Storage* table = db.getTable(tableName);
 
-         storage.insertRecord(name,age);
+         if(!table){
+            std::cout<<"Tables not found\n";
+            continue;
+         }
+         
+         int nextId = table->getRecordCount() +1;
+         
+         table->insertRecord(name,age);
          std::cout<<"Record Inserted\n";
       }
       else if(command == "read"){
+         std::string tableName;
          int index;
-         ss >> index;
+         ss >>tableName >> index;
 
-         if(index <= 0){
+         Storage* table = db.getTable(tableName);
+
+         if(!table || index <= 0){
             std::cout << "Invalid index\n";
             continue;
          }
 
-         Record r = storage.readRecord(index-1);
+         Record r = table->readRecord(index-1);
 
          if(r.isActive == true){
             std::cout<<r.id<<" "<<r.name<<" "<<r.age<<std::endl;
@@ -100,67 +118,97 @@ int main(){
          }
       }
       else if(command == "delete"){
+         std::string tableName;
          int index;
          
-         if(!(ss >> index)){
-            std::cout<<"Usage: delete <index>\n";
+         if(!(ss>> tableName >> index)){
+            std::cout<<"Usage: delete <table_name> <index>\n";
             continue;
          }
 
-         if(index <= 0){
+         Storage* table = db.getTable(tableName);
+
+         if(!table || index <= 0){
             std::cout << "Invalid index\n";
             continue;
          }
 
-         storage.deleteRecord(index-1);   // 1-based indexing
+         table->deleteRecord(index-1);   // 1-based indexing
          
          std::cout<<"Record deleted\n";
       }
       else if(command == "activeCount"){
+         std::string tableName;
+         ss>> tableName;
 
-         int count = storage.getActiveRecordCount();
+         Storage * table = db.getTable(tableName);
+
+         if(!table){
+            std::cout<<"Table not found\n";
+            continue;
+         }
+
+         int count = table->getActiveRecordCount();
 
          std::cout<<"Total Active Records: "<<count<<std::endl;
       }
       else if(command == "totalCount"){
 
-         int totalCount = storage.getRecordCount();
+         std::string tableName;
+         ss>> tableName;
+         
+         Storage* table = db.getTable(tableName);
+
+         if(!table){
+            std::cout<<"Table not found\n";
+            continue;
+         }
+
+
+         int totalCount = table->getRecordCount();
          
          std::cout<<"Total Record Count: "<<totalCount<<std::endl;
       }
       else if(command == "update"){
          int index;
-         std::string name;
+         std::string tableName,name;
          int age;
          
-         ss >> index >> name >> age;
+         ss >>tableName >> index >> name >> age;
 
-         if(index<=0){
+         Storage* table = db.getTable(tableName);
+
+         if(!table || index<=0){
             std::cout<<"Invalid index\n";
             continue;
          }
          
-         index--;   // To convert it into 0-based indexing
-
-         Record r;
-         r.id = index+1;
-         r.age = age;
-         strcpy(r.name, name.c_str());
-         r.isActive = true;
-
-         storage.updateRecord(index,r);
+        Record r;
+        r.id = index;
+        r.age = age;
+        r.isActive = true;
+        strcpy(r.name,name.c_str());
+        
+        table->updateRecord(index-1,r);
 
          std::cout<<"Record Updated\n";
 
       }
       else if(command == "find"){
-         std::string name;
-         if(!(ss >> name)){
+         std::string tableName, name;
+         if(!(ss>>tableName >> name)){
             std::cout<<"Usage: find <name>\n";
             continue;
          }
+
+         Storage* table = db.getTable(tableName);
+
+         if(!table){
+            std::cout<<"Table not found\n";
+            continue;
+         }
          
-         storage.findByName(name);
+         table->findByName(name);
 
       }
       else if(command == "createTable"){

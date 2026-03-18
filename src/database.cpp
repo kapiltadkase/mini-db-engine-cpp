@@ -64,14 +64,14 @@ void Database :: createTable(const std::string& name){
 
 }
 
-Storage* Database :: getTable(const std::string& name){
+Storage* Database :: getTable(const std::string& tableName){
 
-    if(tables.empty() || tables.find(name) == tables.end()){
+    if(tables.empty() || tables.find(tableName) == tables.end()){
         std::cout<<"No table found\n";
         return NULL;
     }
 
-    return tables[name];
+    return tables[tableName];
 
 }
 
