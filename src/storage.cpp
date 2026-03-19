@@ -1,19 +1,16 @@
 #include "../include/storage.h"
 #include <fstream>
+#include <sstream>
 #include <iostream>
 #include <cstring>
 
 
 Storage :: Storage(std::string file){
     filename = file;
-    
-    metaFile = file + ".meta";
 
-    std::ofstream createFile(filename,std::ios::app);
-    createFile.close();
+    metaFile = file.substr(0,file.find(".db")) + ".meta";
 
     buildIndex();
-    
     loadMetaData();
 }
 
@@ -23,23 +20,58 @@ void Storage :: loadMetaData(){
     if(!file){
         // If file doesnt exist calculate nextId and create Meta data
         nextId = getRecordCount() + 1;
-        saveMetaData();
         return;
     }
+
+    std::string line;
+    bool foundNextId = false;
+
+    while(std::getline(file, line)){
+        if(line.find("nextId=")==0){
+            nextId = std::stoi(line.substr(7));
+            foundNextId = true;
+        }
+        else if(line.find("columns=")==0){
+            std::stringstream ss(line.substr(8));
+            std::string col;
+
+            while(ss >> col){
+                columns.push_back(col);
+            }
+
+        }
+    }
     
-    file >> nextId;
     file.close();
+
+    // Safety fallback if corrupted file
+    if(!foundNextId){
+        nextId = getRecordCount() + 1; 
+    }
 
 }
 
 void Storage :: saveMetaData(){
+
+    if(metaFile.empty()){
+        std::cout<<"Meta file path is empty! \n";
+        return;
+    }
     std::ofstream file(metaFile);
 
     if(!file){
         std::cout<<"Failed to write metadata\n";
+        return;
     }
 
-    file <<  nextId;
+    file <<"nextId="<<nextId<<"\n";
+
+    file<<"columns=";
+    for(const auto& col : columns){
+        file << col << " ";
+    }
+
+    file << "\n";
 
     file.close();
 }

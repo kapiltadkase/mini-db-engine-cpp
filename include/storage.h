@@ -11,10 +11,13 @@
 class Storage{
     private:
     std::string filename;
-    int nextId;
     std::string metaFile;
+    
 
     public:
+
+    int nextId;
+    std::vector<std::string> columns;
 
     Storage(std::string file);
     // Just Declaring the function

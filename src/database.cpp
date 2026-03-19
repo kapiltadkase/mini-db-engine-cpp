@@ -38,8 +38,8 @@ void Database :: loadTables(){
 }
 
 
-void Database :: createTable(const std::string& name){
-
+void Database :: createTable(const std::string& name, const std::vector<std::string>& columns){
+    
     // If table already exists let the user know
     if(tables.find(name) != tables.end()){
         std::cout<<"Table already exists\n";
@@ -57,8 +57,20 @@ void Database :: createTable(const std::string& name){
 
     file.close();
 
+    // Create Storage obj
+    Storage* table = new Storage(filename);
 
-    tables[name] = new Storage(filename);  // Easy access to tables
+    // Set Schemna
+    table->columns = columns;
+    
+    table->nextId = 1;   // Initialize nexId
+
+
+    tables[name] = table;  // Store in map
+
+    tables[name]->saveMetaData();
+
+    
 
     std::cout<<"Table "<<name<<" created\n";
 

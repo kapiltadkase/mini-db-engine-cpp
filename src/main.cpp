@@ -38,8 +38,15 @@ int main(){
          std:: string tableName;
          ss>> tableName;
 
+         std::vector<std::string> columns;
+         std::string col;
+
+         while(ss >> col){
+            columns.push_back(col);
+         }
+
          if(tableName.empty()){
-            std::cout<<"Usage: createTable <table_name>\n";
+            std::cout<<"Usage: createTable <table_name> <col1> <col2> ....\n";
             continue;
          }
          
@@ -48,13 +55,11 @@ int main(){
          if(!file){
             std::cout<<"Failed to create table\n";
          }
-         else{
-            std::cout<<"Table created\n";
-         }
+         
 
          file.close();
 
-         db.createTable(tableName);
+         db.createTable(tableName, columns);
 
       }
       else if(command == "showTables"){
@@ -210,21 +215,6 @@ int main(){
          
          table->findByName(name);
 
-      }
-      else if(command == "createTable"){
-
-         std::string tablename;
-
-         if(!(ss >> tablename)){
-            std::cout<<"Usage: createTable <tableName>\n";
-            continue;
-         }
-
-         db.createTable(tablename);
-
-      }
-      else if(command == "showTables"){
-         db.showTables();
       }
       else if(command == "help"){
          std::cout << "Available commands:\n";

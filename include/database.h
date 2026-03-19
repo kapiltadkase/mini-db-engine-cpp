@@ -15,7 +15,7 @@ class Database{
 
         void loadTables();
 
-        void createTable(const std::string& name);
+        void createTable(const std::string& name, const std::vector<std::string>& columns);
         
         Storage* getTable(const std::string& tableName);
         
