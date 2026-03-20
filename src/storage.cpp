@@ -96,18 +96,39 @@ void Storage :: buildIndex(){
     file.close();
 }
 
-void Storage :: insertRecord(const std::string& name , int age){
-   Record r;
+void Storage :: insertRecord(const std::vector<std::string>& values){
 
+   // Implementing Schema Validation
+   // STEP 1 : Validate the number of values
+   if(values.size() != columns.size()){
+        std::cout<< "Schema mismatch! Expected "<<columns.size()<<" values but got "<<values.size()<<"\n";
+        return;
+   }
+
+
+   Record r;
+   // Step 2 : Assign ID
    r.id = nextId++;
-   
    saveMetaData();
 
-   r.age = age;
    r.isActive = true;
 
-   strcpy(r.name , name.c_str());
+   // Step 3 : Map values -> struct(temporary hack for fixed struct)
+   // We only have name + age in struct rn
 
+   strcpy(r.name , values[0].c_str());
+
+   try{
+    r.age = std::stoi(values[1]);
+   }
+   catch(...){
+    std::cout<< "Invalid age format\n";
+    return;
+   }
+   
+   // City is ignored for now (due to fixed record)
+
+   // Step 4 : Writing to file
    // Opening file in write,binary and append  mode
    std::ofstream outFile(filename, std::ios::binary | std::ios::app);
 
@@ -120,6 +141,8 @@ void Storage :: insertRecord(const std::string& name , int age){
 
    int index = getRecordCount() - 1;
    nameIndex[r.name].push_back(index);
+
+   std::cout<<"Record Inserted\n";
 }
 
 void Storage :: printAllRecords(){

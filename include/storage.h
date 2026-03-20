@@ -21,7 +21,7 @@ class Storage{
 
     Storage(std::string file);
     // Just Declaring the function
-    void insertRecord(const std::string& name , int age);
+    void insertRecord(const std::vector<std::string>& values);
 
     Record readRecord(int index);
 

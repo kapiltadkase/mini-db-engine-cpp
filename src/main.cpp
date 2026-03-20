@@ -81,13 +81,9 @@ int main(){
       }
       else if(command=="insert"){
 
-         std::string tableName ,name;
-         int age;
+         std::string tableName;
+         ss >> tableName;
 
-         // Extracting the rest of the token
-         if(!(ss >>tableName >> name >> age)){
-            std::cout<<"Usage insert <name> <age>\n";
-         }
 
          Storage* table = db.getTable(tableName);
 
@@ -95,11 +91,18 @@ int main(){
             std::cout<<"Tables not found\n";
             continue;
          }
+
+         std::vector<std::string> values;
+         std::string value;
+
+         while(ss >> value){
+            values.push_back(value);
+         }
          
          int nextId = table->getRecordCount() +1;
          
-         table->insertRecord(name,age);
-         std::cout<<"Record Inserted\n";
+         table->insertRecord(values);
+   
       }
       else if(command == "read"){
          std::string tableName;
