@@ -97,24 +97,17 @@ void Storage :: buildIndex(){
 }
 
 void Storage :: insertRecord(const std::vector<std::string>& values){
-
    // Implementing Schema Validation
    // STEP 1 : Validate the number of values
    if(values.size() != columns.size()){
         std::cout<< "Schema mismatch! Expected "<<columns.size()<<" values but got "<<values.size()<<"\n";
         return;
    }
-
-
    Record r;
-   // Step 2 : Assign ID
    r.id = nextId++;
    saveMetaData();
 
    r.isActive = true;
-
-   // Step 3 : Map values -> struct(temporary hack for fixed struct)
-   // We only have name + age in struct rn
 
    strcpy(r.name , values[0].c_str());
 
@@ -126,40 +119,52 @@ void Storage :: insertRecord(const std::vector<std::string>& values){
     return;
    }
    
-   // City is ignored for now (due to fixed record)
-
-   // Step 4 : Writing to file
-   // Opening file in write,binary and append  mode
-   std::ofstream outFile(filename, std::ios::binary | std::ios::app);
+   // Text Based Storage
+   std::ofstream outFile(filename,std::ios::app);
 
    if(!outFile){
         std::cout<<"1.Failed to open the file\n";
    }
 
-   outFile.write(reinterpret_cast<char*>(&r),sizeof(Record));
-   outFile.close();
+   //Format : id|isActive| values....
+   std::string row = std::to_string(r.id) + "|1";
+    
+   for(const auto& val : values){
+        row += "|" + val;
+   }
 
-   int index = getRecordCount() - 1;
-   nameIndex[r.name].push_back(index);
+   outFile << row <<"\n";
+   outFile.close();
 
    std::cout<<"Record Inserted\n";
 }
 
 void Storage :: printAllRecords(){
-    //Opening file in binary mode for reading
-    std::ifstream inFile(filename,std::ios::binary);
+    std::ifstream inFile(filename);
 
-    if (!inFile)
-    {
-        std::cout<<"2.Failed to open the file for reading. \n";
+    if(!inFile){
+        std::cout<< "Failed to open file\n";
         return;
     }
 
-    Record r;
-    
-    while(inFile.read(reinterpret_cast<char*>(&r),sizeof(Record))){
-        if(r.isActive == true){
-           std::cout<<r.id<<" "<<r.name<<" "<<r.age<<" "<<std::endl; 
+    std::string line;
+    while(std::getline(inFile,line)){
+        if(line.empty()){
+            continue;
+        }
+
+        std::stringstream ss(line);
+
+        std::string token;
+        std::vector<std::string> row;
+
+        while(std::getline(ss,token,'|')){
+            row.push_back(token);
+        }
+
+        // row format: id|isActive|values....
+        if(row.size()>1 && row[1]=="1"){
+            std::cout<< line <<"\n";
         }
     }
 
@@ -256,14 +261,69 @@ void Storage :: updateRecord(int index, const Record& record){
 }
 
 void Storage :: deleteRecord(int index){
-    if(index < 0 || index >= getRecordCount()){
-        std::cout << "Invalid index\n";
+    std::ifstream inFile(filename);
+    if(!inFile){
+        std::cout<<"Failed to open file\n";
         return;
     }
-    Record r = readRecord(index);
-    r.isActive = false;
 
-    updateRecord(index,r);
+    std::vector<std::string> lines;
+    std::string line;
+    int currentIndex = 0;
+    bool found = false;
+
+    while(std::getline(inFile,line)){
+        if(line.empty()){
+            continue;
+        }
+
+        if(currentIndex == index){
+            std::stringstream ss(line);
+            std::string token;
+            std::vector<std::string> row;
+
+            while(std::getline(ss,token, '|')){
+                row.push_back(token);
+            }
+
+            // row format: id|isActive|values....
+            if(row.size() > 1){
+                row[1] = "0";  // mark as deleted;
+            }
+
+            // rebuilding line
+            std::string newLine = row[0];
+            for(int i=1;i<row.size(); i++){
+                newLine += "|" + row[i];
+            }
+
+            lines.push_back(newLine);
+            found = true;
+        }
+        else{
+            lines.push_back(line);
+        }
+
+        currentIndex++;
+    }
+
+    inFile.close();
+
+    if(!found){
+        std::cout<< "Invalid index\n";
+        return;
+    }
+
+    // rewrite the file
+    std::ofstream outFile(filename,std::ios::trunc);
+
+    for(const auto& l : lines){
+        outFile<< l <<"\n";
+    }
+
+    outFile.close();
+
+    std::cout<< "Record deleted\n";
 }
 
 void Storage :: findByName(const std::string& name){

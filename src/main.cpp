@@ -143,7 +143,6 @@ int main(){
 
          table->deleteRecord(index-1);   // 1-based indexing
          
-         std::cout<<"Record deleted\n";
       }
       else if(command == "activeCount"){
          std::string tableName;
