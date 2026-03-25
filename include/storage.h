@@ -35,7 +35,7 @@ class Storage{
     
     void deleteRecord(int index);
 
-    void findByName(const std::string& name);
+    void findByColumn(const std::string& columnName, const std::string& value);
 
     // Implementing hash index
     std::unordered_map<std::string, std::vector<int>> nameIndex;

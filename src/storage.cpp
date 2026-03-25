@@ -326,21 +326,70 @@ void Storage :: deleteRecord(int index){
     std::cout<< "Record deleted\n";
 }
 
-void Storage :: findByName(const std::string& name){
+// Scanning file line by line , match the name and check if it isActive and then print
+void Storage :: findByColumn(const std::string& columnName, const std::string& value){
     
-    if(nameIndex.find(name) == nameIndex.end()){
-        std::cout<<"No record found\n";
+    std::ifstream inFile(filename);
+    if(!inFile){
+        std::cout<<"Failed to open file\n";
         return;
     }
 
-    std::vector<int> positions = nameIndex[name];
+    // Find column index dynamically
 
-    for(int pos : positions){
-        Record r = readRecord(pos);
+    int colIndex = -1;
+    for(int i=0;i<columns.size();i++){
+        if(columns[i]==columnName){
+            colIndex = i ; // offset for id and isActive
+            break;
+        }
 
-        if(r.isActive){
-            std::cout<<r.id<<" "<<r.name<<" "<<r.age<<std::endl;
+    }
+
+    if(colIndex == -1){
+        std::cout<<"Column not found\n";
+        return;
+    }
+
+    std::string line;
+    bool found = false;
+
+    while(std::getline(inFile,line)){
+        if(line.empty()){
+            continue;
+        }
+
+        std::stringstream ss(line);
+        std::string token;
+        std::vector<std::string> row;
+
+        while(std::getline(ss, token, '|')){
+            row.push_back(token);
+        }
+
+        if(row.size() < columns.size() + 2 ){
+            continue;
+        }
+
+        if(row[1] == "0"){
+            continue;
+        }
+        
+        // offset (id + isActive)
+        if(row[colIndex + 2] == value){
+            for(auto &col : row){
+                std::cout<< col << " ";
+            }
+
+            std::cout<<"\n";
+
+            found = true;
         }
     }
 
+    inFile.close();
+
+    if(!found){
+        std::cout<<"No record found\n";
+    }
 }

@@ -202,9 +202,9 @@ int main(){
 
       }
       else if(command == "find"){
-         std::string tableName, name;
-         if(!(ss>>tableName >> name)){
-            std::cout<<"Usage: find <name>\n";
+         std::string tableName, columnName, value;
+         if(!(ss>>tableName >> columnName >> value)){
+            std::cout<<"Usage: find <column_name> <value>\n";
             continue;
          }
 
@@ -215,7 +215,7 @@ int main(){
             continue;
          }
          
-         table->findByName(name);
+         table->findByColumn(columnName, value);
 
       }
       else if(command == "help"){
