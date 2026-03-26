@@ -172,28 +172,44 @@ void Storage :: printAllRecords(){
     
 }
 
-Record Storage ::  readRecord(int index){
+std::vector<std::string> Storage ::  readRecord(int index){
     //Opening file in binary mode for reading
     std::ifstream inFile(filename, std::ios::binary);
     
     if (!inFile)
     {
         std::cout<<"3.Failed to open file for reading \n";
-        return Record();
+        return {};
+    }
+    
+    std::string line;
+    int currentIndex = 0;
+    
+    while(std::getline(inFile,line)){
+        
+        if(line.empty()){
+            continue;
+        }
+
+        if(currentIndex == index){
+            std::vector<std::string> row;
+            std::stringstream ss(line);
+            std::string token;
+            
+            while(std::getline(ss,token, '|')){
+                row.push_back(token);
+            }
+
+            inFile.close();
+            return row;
+        }
+
+        currentIndex++;
     }
 
-    Record r;
-    
-    // Fetching record using offset calculation
-    auto offset = index * sizeof(Record);
-
-    inFile.seekg(offset,std::ios::beg); // moves the file pointer
-    // Now the pointer to the file is pointing to the record with at given index using the offset method
-    inFile.read(reinterpret_cast<char*>(&r),sizeof(Record));  // Storing the value of record at given index in the memory of Record r
-    
     inFile.close();
-
-    return r;
+    return {};
+    
 }
 
 int Storage :: getRecordCount(){
@@ -237,27 +253,68 @@ int Storage :: getActiveRecordCount(){
 }
 
 
-void Storage :: updateRecord(int index, const Record& record){
-    if(index < 0 || index >= getRecordCount()){
-        std::cout << "Invalid index\n";
+void Storage :: updateRecord(int index, const std::vector<std::string>& newValues){
+    // Read the existing record
+    auto row = readRecord(index);
+
+    if(row.empty()){
+        std::cout<<"Invalid index\n";
         return;
     }
-    // Opening File in read mode and write mode (binary)
-    std:: fstream File(filename,std::ios::binary | std::ios::in | std::ios::out);
 
-    if (!File)
-    {
-        std::cout<<"7.Failed to open File\n";
+    if(row[1] == "0"){
+        std::cout<< "Cannot update deleted record\n";
         return;
     }
-    
-    auto offset = index * sizeof(Record);
-    
-    File.seekp(offset,std::ios::beg);
 
-    File.write(reinterpret_cast<const char*>(&record),sizeof(Record));
+    if(newValues.size() != columns.size()){
+        std::cout<< "Invalid number of values\n";
+        return;
+    }
 
-    File.close();
+    // Updating row (skiping the id and isActive)
+    for(int i=0;i<newValues.size();i++){
+        row[i+2] = newValues[i];  // row[0] = id and row[1] = isActive
+    }
+
+    // Rewriting the file
+    std::ifstream inFile(filename);
+    std::ofstream tempFile("temp.db");
+
+    std::string line;
+    int currentIndex = 0;
+
+    while(std::getline(inFile,line)){
+        
+        if(currentIndex == index){
+            // writing updated row
+            for(int i =0;i<row.size();i++){
+                tempFile << row[i];
+                
+                if(i != row.size()-1){
+                    tempFile << "|";
+                }
+            }
+
+            tempFile << "\n";
+        }
+        else{
+            // if we are not on the required index push the original lines into the file
+            tempFile << line << "\n";
+        }
+
+        currentIndex++;
+    }
+
+    inFile.close();
+    tempFile.close();
+
+    // Replacing the original file 
+    remove(filename.c_str());
+    rename("temp.db", filename.c_str());
+
+    std::cout<<"Record Updated\n";
+
 }
 
 void Storage :: deleteRecord(int index){
@@ -326,7 +383,7 @@ void Storage :: deleteRecord(int index){
     std::cout<< "Record deleted\n";
 }
 
-// Scanning file line by line , match the name and check if it isActive and then print
+// Scanning file line by line , match the name and check if its isActive and then print
 void Storage :: findByColumn(const std::string& columnName, const std::string& value){
     
     std::ifstream inFile(filename);

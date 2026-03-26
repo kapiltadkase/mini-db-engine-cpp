@@ -116,10 +116,13 @@ int main(){
             continue;
          }
 
-         Record r = table->readRecord(index-1);
+         auto r = table->readRecord(index-1);
 
-         if(r.isActive == true){
-            std::cout<<r.id<<" "<<r.name<<" "<<r.age<<std::endl;
+         if(r[1] == "1"){
+            for(int i=1;i<r.size();i++){
+               std::cout<<r[i]<<" ";
+            }
+            std::cout<<"\n";
          }
          else{
             std::cout<<"Record is deleted or inactive\n";
@@ -177,28 +180,27 @@ int main(){
          std::cout<<"Total Record Count: "<<totalCount<<std::endl;
       }
       else if(command == "update"){
-         int index;
-         std::string tableName,name;
-         int age;
-         
-         ss >>tableName >> index >> name >> age;
+        std::string tableName;
+        int index;
 
-         Storage* table = db.getTable(tableName);
+        ss >> tableName >> index;
 
-         if(!table || index<=0){
-            std::cout<<"Invalid index\n";
+        Storage*  table = db.getTable(tableName);
+
+        if(!table){
             continue;
-         }
-         
-        Record r;
-        r.id = index;
-        r.age = age;
-        r.isActive = true;
-        strcpy(r.name,name.c_str());
-        
-        table->updateRecord(index-1,r);
+        }
 
-         std::cout<<"Record Updated\n";
+        std::vector<std::string> values;
+        std::string val;
+
+        while(ss >>  val){
+            values.push_back(val);
+        }
+
+        table->updateRecord(index-1,values);
+
+
 
       }
       else if(command == "find"){

@@ -23,7 +23,7 @@ class Storage{
     // Just Declaring the function
     void insertRecord(const std::vector<std::string>& values);
 
-    Record readRecord(int index);
+    std::vector<std::string> readRecord(int index);
 
     void printAllRecords();
 
@@ -31,7 +31,7 @@ class Storage{
 
     int getRecordCount();
 
-    void updateRecord(int index, const Record& record);
+    void updateRecord(int index, const std::vector<std::string>& newValues);
     
     void deleteRecord(int index);
 
