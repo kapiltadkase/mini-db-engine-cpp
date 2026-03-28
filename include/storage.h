@@ -12,6 +12,8 @@ class Storage{
     private:
     std::string filename;
     std::string metaFile;
+
+
     
 
     public:
@@ -38,7 +40,8 @@ class Storage{
     void findByColumn(const std::string& columnName, const std::string& value);
 
     // Implementing hash index
-    std::unordered_map<std::string, std::vector<int>> nameIndex;
+    std::unordered_map<std::string , std::unordered_map<std::string,std::vector<int>>> index;
+
     void buildIndex();
 
     void loadMetaData();

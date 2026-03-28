@@ -9,9 +9,10 @@ Storage :: Storage(std::string file){
     filename = file;
 
     metaFile = file.substr(0,file.find(".db")) + ".meta";
-
-    buildIndex();
+    
     loadMetaData();
+    buildIndex();
+    
 }
 
 void Storage :: loadMetaData(){
@@ -76,21 +77,51 @@ void Storage :: saveMetaData(){
     file.close();
 }
 
-void Storage :: buildIndex(){
-    // opening file for reading in binary mode
-    std::ifstream file(filename, std::ios::binary);
 
-    if(!file){
-        return;
-    }
-    
-    Record r;
-    int index = 0;
-    while(file.read(reinterpret_cast<char*> (&r),sizeof(Record))){
-        if(r.isActive){
-           nameIndex[r.name].push_back(index);
+
+void Storage :: buildIndex(){
+    index.clear();
+
+    std::ifstream file(filename);
+    std::string line;
+    int rowIndex = 0;
+
+    while(std::getline(file,line)){
+        if(line.empty()){
+            rowIndex++;
+            continue;
         }
-        index++;
+
+        std::stringstream ss(line);
+        std::string token;
+        std::vector<std::string> row;
+
+        while(std::getline(ss,token,'|')){
+            row.push_back(token);           // row looks likes {id, isActive, value1 , value2 ,.....}
+        }
+
+        // Validating
+        if(row.size() < columns.size() + 2){
+            rowIndex++;
+            continue;
+        }
+
+        // Skipping the deleted ones
+        if(row[1] == "0"){
+            rowIndex++;
+            continue;
+        }
+
+        // Looping thru all the columns 
+        for(int i=0; i<columns.size();i++){
+            std::string columnName = columns[i];
+
+            std::string value = row[i+2];   // offsetting the id and isActive columns
+
+            index[columnName][value].push_back(rowIndex);
+        }
+
+        rowIndex++;
     }
 
     file.close();
@@ -135,6 +166,8 @@ void Storage :: insertRecord(const std::vector<std::string>& values){
 
    outFile << row <<"\n";
    outFile.close();
+
+   buildIndex(); // rebuilding index after insert
 
    std::cout<<"Record Inserted\n";
 }
@@ -385,68 +418,32 @@ void Storage :: deleteRecord(int index){
 
 // Scanning file line by line , match the name and check if its isActive and then print
 void Storage :: findByColumn(const std::string& columnName, const std::string& value){
-    
-    std::ifstream inFile(filename);
-    if(!inFile){
-        std::cout<<"Failed to open file\n";
+    if(index.find(columnName) == index.end() || index[columnName].find(value) == index[columnName].end()){
+        std::cout<<"No record found\n";
         return;
     }
 
-    // Find column index dynamically
+    for(int idx : index[columnName][value]){
+        auto row = readRecord(idx);
 
-    int colIndex = -1;
-    for(int i=0;i<columns.size();i++){
-        if(columns[i]==columnName){
-            colIndex = i ; // offset for id and isActive
-            break;
-        }
+        if(!row.empty() && row[1] == "1"){
+            for(int i = 0; i<row.size();i++){
+                if(i==1){
+                    continue; // skipping the isActive
+                }
 
-    }
+                std::cout<< row[i];
 
-    if(colIndex == -1){
-        std::cout<<"Column not found\n";
-        return;
-    }
-
-    std::string line;
-    bool found = false;
-
-    while(std::getline(inFile,line)){
-        if(line.empty()){
-            continue;
-        }
-
-        std::stringstream ss(line);
-        std::string token;
-        std::vector<std::string> row;
-
-        while(std::getline(ss, token, '|')){
-            row.push_back(token);
-        }
-
-        if(row.size() < columns.size() + 2 ){
-            continue;
-        }
-
-        if(row[1] == "0"){
-            continue;
-        }
-        
-        // offset (id + isActive)
-        if(row[colIndex + 2] == value){
-            for(auto &col : row){
-                std::cout<< col << " ";
+                if(i != row.size() - 1){
+                    std::cout << " ";
+                }
             }
-
             std::cout<<"\n";
 
-            found = true;
+        }
+        else{
+            std::cout<<"No record found\n";
         }
     }
-
-    inFile.close();
-
-    if(!found){
-        std::cout<<"No record found\n";
-    }
+    
 }
