@@ -47,6 +47,8 @@ class Storage{
     void loadMetaData();
     void saveMetaData();
 
+    void printFormatted(const std::vector<std::vector<std::string>>& rows);
+
 
 };
 

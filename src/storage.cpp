@@ -181,13 +181,15 @@ void Storage :: printAllRecords(){
     }
 
     std::string line;
+    
+    std::vector<std::vector<std::string>> rows;
+
     while(std::getline(inFile,line)){
         if(line.empty()){
             continue;
         }
 
         std::stringstream ss(line);
-
         std::string token;
         std::vector<std::string> row;
 
@@ -195,13 +197,15 @@ void Storage :: printAllRecords(){
             row.push_back(token);
         }
 
-        // row format: id|isActive|values....
-        if(row.size()>1 && row[1]=="1"){
-            std::cout<< line <<"\n";
+        // Keeping only the active records
+        if(row.size() > 1 & row[1] ==  "1"){
+            rows.push_back(row);
         }
     }
 
     inFile.close();
+
+    printFormatted(rows);
     
 }
 
@@ -423,27 +427,57 @@ void Storage :: findByColumn(const std::string& columnName, const std::string& v
         return;
     }
 
+    std::vector<std::vector<std::string>> results;
+
     for(int idx : index[columnName][value]){
         auto row = readRecord(idx);
 
         if(!row.empty() && row[1] == "1"){
-            for(int i = 0; i<row.size();i++){
-                if(i==1){
-                    continue; // skipping the isActive
-                }
 
-                std::cout<< row[i];
-
-                if(i != row.size() - 1){
-                    std::cout << " ";
-                }
-            }
-            std::cout<<"\n";
+            results.push_back(row);
 
         }
         else{
             std::cout<<"No record found\n";
         }
     }
+
+    printFormatted(results);
     
+}
+
+
+void Storage :: printFormatted(const std::vector<std::vector<std::string>>& rows){
+    if(rows.empty()){
+        std::cout<< "No records found\n";
+        return ;
+    }
+
+    //Printing header
+    std::cout<<"id\t";
+    for(auto &col : columns){
+        std::cout<< col <<"\t";
+    }
+    std::cout<<"\n";
+
+    std::cout<<"-------------------------------------------------------\n";
+
+    //Priting rows
+    for(auto &row : rows){
+
+        // skipping the deleted 
+        if(row.size() < columns.size() + 2 || row[1] == "0"){
+            continue;
+        }
+
+        // printing id
+        std::cout<<row[0]<<"\t";
+
+        //printing column values
+        for(int i=0;i<columns.size();i++){
+            std::cout << row[i+2] << "\t";
+        }
+
+        std::cout<< "\n";
+    }
 }
