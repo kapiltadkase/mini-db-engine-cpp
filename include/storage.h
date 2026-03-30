@@ -12,8 +12,8 @@ class Storage{
     private:
     std::string filename;
     std::string metaFile;
-
-
+    
+    int getColumnIndex(const std::string& columnName);
     
 
     public:
@@ -37,7 +37,7 @@ class Storage{
     
     void deleteRecord(int index);
 
-    void findByColumn(const std::string& columnName, const std::string& value);
+    void findByColumn(const std::vector<std::pair<std::string,std::string>>& conditions);
 
     // Implementing hash index
     std::unordered_map<std::string , std::unordered_map<std::string,std::vector<int>>> index;

@@ -204,12 +204,8 @@ int main(){
 
       }
       else if(command == "find"){
-         std::string tableName, columnName, value;
-         if(!(ss>>tableName >> columnName >> value)){
-            std::cout<<"Usage: find <column_name> <value>\n";
-            continue;
-         }
-
+         std::string tableName;
+         ss >> tableName;
          Storage* table = db.getTable(tableName);
 
          if(!table){
@@ -217,7 +213,20 @@ int main(){
             continue;
          }
          
-         table->findByColumn(columnName, value);
+         std::vector<std::pair<std::string,std::string>> conditions ;
+         
+         std::string col, val;
+         
+         while(ss >> col >> val){
+            conditions.push_back({col,val});
+         }
+
+         if(conditions.empty()){
+            std::cout<<"No condition provided\n";
+            continue;
+         }
+
+         table->findByColumn(conditions);
 
       }
       else if(command == "help"){

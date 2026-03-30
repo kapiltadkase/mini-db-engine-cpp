@@ -421,26 +421,56 @@ void Storage :: deleteRecord(int index){
 }
 
 // Scanning file line by line , match the name and check if its isActive and then print
-void Storage :: findByColumn(const std::string& columnName, const std::string& value){
-    if(index.find(columnName) == index.end() || index[columnName].find(value) == index[columnName].end()){
-        std::cout<<"No record found\n";
-        return;
-    }
+void Storage :: findByColumn(const std::vector<std::pair<std::string,std::string>>& conditions){
+    std::ifstream file(filename);
+    std::string line;
 
     std::vector<std::vector<std::string>> results;
 
-    for(int idx : index[columnName][value]){
-        auto row = readRecord(idx);
-
-        if(!row.empty() && row[1] == "1"){
-
-            results.push_back(row);
-
+    while(std::getline(file,line)){
+        if(line.empty()){
+            continue;
         }
-        else{
-            std::cout<<"No record found\n";
+
+        std::stringstream ss(line);
+        std::string token;
+        std::vector<std::string> row;
+
+        while(std::getline(ss,token,'|')){
+            row.push_back(token);
+        }
+
+        // Skip deleted
+        if(row.size() < 2 || row[1] == "0"){
+            continue;
+        }
+
+        bool match = true;
+
+        for(auto& cond : conditions){
+            int colIndex = getColumnIndex(cond.first);
+
+
+            if(colIndex == -1){
+                match = false;
+                break;
+            }
+
+            std::string actual = row[colIndex + 2];
+            std::string expected = cond.second;
+
+            if(actual != expected){
+                match = false;
+                break;
+            }
+        }
+
+        if(match){
+            results.push_back(row);
         }
     }
+
+    file.close();
 
     printFormatted(results);
     
@@ -481,3 +511,14 @@ void Storage :: printFormatted(const std::vector<std::vector<std::string>>& rows
         std::cout<< "\n";
     }
 }
+
+
+int Storage :: getColumnIndex(const std::string& columnName){
+    for(int i=0;i<columns.size();i++){
+        if(columns[i] == columnName){
+            return i;
+        }
+    }
+
+    return -1 ;
+} 
