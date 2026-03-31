@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <filesystem>
+#include <algorithm>
 
 namespace fs = std::filesystem;
 
@@ -93,9 +94,21 @@ void Database :: showTables(){
         std::cout<<"No tables found\n";
         return;
     }
+
+    std::cout<<"Tables:\n";
+    std::cout<<"----------------------\n";
+
+    std::vector<std::string> tableNames;
     
     for(auto &table : tables){
-        std::cout<<table.first<<std::endl;
+        tableNames.push_back(table.first);
     }
 
+    // Sorting it to get table names in alphabetical order
+    std::sort(tableNames.begin(),tableNames.end());
+
+    //printing
+    for(auto&  name : tableNames){
+        std::cout<<name<<"\n";
+    }
 }
