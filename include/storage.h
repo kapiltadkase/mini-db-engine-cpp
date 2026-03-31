@@ -49,6 +49,8 @@ class Storage{
 
     void printFormatted(const std::vector<std::vector<std::string>>& rows);
 
+    bool validateConditions(const std::vector<std::pair<std::string,std::string>>& conditions);
+
 
 };
 

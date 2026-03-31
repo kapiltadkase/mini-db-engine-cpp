@@ -222,7 +222,11 @@ int main(){
          }
 
          if(conditions.empty()){
-            std::cout<<"No condition provided\n";
+            std::cout<<"Error: No condition provided\n";
+            continue;
+         }
+
+         if(!table->validateConditions(conditions)){
             continue;
          }
 

@@ -521,4 +521,20 @@ int Storage :: getColumnIndex(const std::string& columnName){
     }
 
     return -1 ;
-} 
+}
+
+
+bool Storage :: validateConditions(const std::vector<std::pair<std::string,std::string>>& conditions){
+    for(auto& cond : conditions){
+        const std::string& columnName = cond.first;
+
+        int colIndex = getColumnIndex(columnName);
+
+        if(colIndex == -1){
+            std::cout<< "Error: Column not found -> "<< columnName<<"\n";
+            return false;
+        }
+    }
+
+    return true;
+}
