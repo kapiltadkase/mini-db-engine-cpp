@@ -51,6 +51,8 @@ class Storage{
 
     bool validateConditions(const std::vector<std::pair<std::string,std::string>>& conditions);
 
+    void describeTable(const std::string& tablename);
+
 
 };
 

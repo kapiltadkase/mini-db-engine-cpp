@@ -29,6 +29,7 @@ int main(){
       
       // 1. Tokenzing the input
       std::stringstream ss(input);
+      std::cout<<"\n";    // better spacing after command
       std::string command;
       
       // 2. Identification of Command (list, insert, read, delete, update, activeCount, totalCount, find, help)
@@ -64,6 +65,19 @@ int main(){
       }
       else if(command == "showTables"){
          db.showTables();
+      }
+      else if(command == "describe"){
+         std::string tableName;
+         ss >> tableName;
+
+         Storage* table = db.getTable(tableName);
+
+         if(!table){
+            std::cout<<"Table not found\n";
+            continue;
+         }
+
+         table->describeTable(tableName);
       }
       else if(command=="list"){
          std::string tableName;
@@ -249,6 +263,8 @@ int main(){
       else{
          std::cout<<"Unknown command. Type 'help' to see available commands.\n";
       }
+
+      std::cout<<"\n";  // spacing before next command input
       
 
    }

@@ -3,6 +3,7 @@
 #include <sstream>
 #include <iostream>
 #include <cstring>
+#include <iomanip>  // for setw()
 
 
 Storage :: Storage(std::string file){
@@ -537,4 +538,16 @@ bool Storage :: validateConditions(const std::vector<std::pair<std::string,std::
     }
 
     return true;
+}
+
+void Storage :: describeTable(const std::string& tableName){
+    std::cout<<"Table: "<< tableName<<"\n";
+    std::cout<<"-----------------------------------------------\n";
+
+    std::cout<< std::left << std::setw(15) << "Column Name" << std::setw(10)<<"Type"<<"\n";
+    std::cout<<"-----------------------------------------------\n";
+
+    for(auto& col : columns){
+        std::cout<<std::left<< std::setw(15)<< col <<std::setw(10) <<"string" <<"\n";  // string is default type
+    }
 }
