@@ -37,7 +37,7 @@ class Storage{
     
     void deleteRecord(int index);
 
-    void findByColumn(const std::vector<std::pair<std::string,std::string>>& conditions);
+    void findByColumn(const std::vector<std::pair<std::string,std::string>>& conditions,int limit = -1);
 
     // Implementing hash index
     std::unordered_map<std::string , std::unordered_map<std::string,std::vector<int>>> index;

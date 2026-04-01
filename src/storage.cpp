@@ -422,7 +422,7 @@ void Storage :: deleteRecord(int index){
 }
 
 // Scanning file line by line , match the name and check if its isActive and then print
-void Storage :: findByColumn(const std::vector<std::pair<std::string,std::string>>& conditions){
+void Storage :: findByColumn(const std::vector<std::pair<std::string,std::string>>& conditions,int limit){
     std::ifstream file(filename);
     std::string line;
 
@@ -472,6 +472,10 @@ void Storage :: findByColumn(const std::vector<std::pair<std::string,std::string
     }
 
     file.close();
+
+    if(limit != -1 && limit < results.size()){
+        results.resize(limit);
+    }
 
     printFormatted(results);
     

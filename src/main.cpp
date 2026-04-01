@@ -229,10 +229,18 @@ int main(){
          
          std::vector<std::pair<std::string,std::string>> conditions ;
          
-         std::string col, val;
-         
-         while(ss >> col >> val){
-            conditions.push_back({col,val});
+         std::string word;
+         int limit = -1;
+
+         while(ss >> word){
+            if(word == "limit"){
+               ss >> limit;
+            }
+            else{
+               std::string value;
+               ss >> value;
+               conditions.push_back({word,value});
+            }
          }
 
          if(conditions.empty()){
@@ -244,7 +252,7 @@ int main(){
             continue;
          }
 
-         table->findByColumn(conditions);
+         table->findByColumn(conditions,limit);
 
       }
       else if(command == "help"){
