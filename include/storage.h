@@ -29,9 +29,7 @@ class Storage{
 
     void printAllRecords();
 
-    int getActiveRecordCount();
-
-    int getRecordCount();
+    std::pair<int,int> getRecordCount();
 
     void updateRecord(int index, const std::vector<std::string>& newValues);
     
@@ -56,4 +54,4 @@ class Storage{
 
 };
 
-#endif
+#endif 

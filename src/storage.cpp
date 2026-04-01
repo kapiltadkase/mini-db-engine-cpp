@@ -21,7 +21,7 @@ void Storage :: loadMetaData(){
 
     if(!file){
         // If file doesnt exist calculate nextId and create Meta data
-        nextId = getRecordCount() + 1;
+        nextId = getRecordCount().first + 1;
         return;
     }
 
@@ -48,7 +48,7 @@ void Storage :: loadMetaData(){
 
     // Safety fallback if corrupted file
     if(!foundNextId){
-        nextId = getRecordCount() + 1; 
+        nextId = getRecordCount().first + 1; 
     }
 
 }
@@ -250,45 +250,48 @@ std::vector<std::string> Storage ::  readRecord(int index){
     
 }
 
-int Storage :: getRecordCount(){
-    // Opening File in read mode (opening at the end)
-    std::ifstream inFile(filename , std::ios::binary | std::ios::ate);
+std::pair<int,int> Storage :: getRecordCount(){
     
+    std::ifstream inFile(filename);
     if(!inFile){
-        std::cout<<"4.Failed to open file\n";
-        return 0;
+        std::cout<<"Table not found";
+        return {};
     }
 
-    auto fileSize = inFile.tellg();  //
-    
-    inFile.close();
+    std::string line;
+    int total = 0;
+    int active = 0;
 
+    while(std::getline(inFile,line)){
+        if(line.empty()){
+            continue;
+        }
 
-    return fileSize/sizeof(Record);
+        std::stringstream ss(line);
+        std::string token;
+        std::vector<std::string> rows;
 
-}
+        while(std::getline(ss,token, '|')){
+            rows.push_back(token);
+        }
 
-int Storage :: getActiveRecordCount(){
-     // Opening File in read mode
-    std::ifstream inFile(filename , std::ios::binary);
-    
-    if(!inFile){
-        std::cout<<"6.Failed to open file\n";
-        return 0;
-    }
+        if(rows.size() < 2){
+            continue;
+        }
 
-    Record r;
-    int count = 0;
-    while(inFile.read(reinterpret_cast<char*> (&r),sizeof(Record))){
-        if(r.isActive){
-            count++;
+        total++;
+
+        if(rows[1] == "1"){
+            active++;
         }
     }
-    
+
     inFile.close();
 
-    return count;
+    return {total,active};
 }
+
+
 
 
 void Storage :: updateRecord(int index, const std::vector<std::string>& newValues){

@@ -113,7 +113,7 @@ int main(){
             values.push_back(value);
          }
          
-         int nextId = table->getRecordCount() +1;
+         int nextId = table->getRecordCount().first +1;
          
          table->insertRecord(values);
    
@@ -161,7 +161,7 @@ int main(){
          table->deleteRecord(index-1);   // 1-based indexing
          
       }
-      else if(command == "activeCount"){
+      else if(command == "count"){
          std::string tableName;
          ss>> tableName;
 
@@ -172,26 +172,10 @@ int main(){
             continue;
          }
 
-         int count = table->getActiveRecordCount();
+         int total = table->getRecordCount().first;
+         int active = table->getRecordCount().second;
 
-         std::cout<<"Total Active Records: "<<count<<std::endl;
-      }
-      else if(command == "totalCount"){
-
-         std::string tableName;
-         ss>> tableName;
-         
-         Storage* table = db.getTable(tableName);
-
-         if(!table){
-            std::cout<<"Table not found\n";
-            continue;
-         }
-
-
-         int totalCount = table->getRecordCount();
-         
-         std::cout<<"Total Record Count: "<<totalCount<<std::endl;
+         std::cout<<"Total records: "<<total<<"\n"<<"Active records: "<<active<<"\n";
       }
       else if(command == "update"){
         std::string tableName;
