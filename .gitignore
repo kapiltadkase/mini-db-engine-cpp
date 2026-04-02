@@ -9,7 +9,8 @@ bin/
 
 # --- Database Data---
 # This ignores your actual database files so they stay local
-tests/
+tests/*
+!tests/.gitkeep
 *.db
 *.log
 *.tmp
