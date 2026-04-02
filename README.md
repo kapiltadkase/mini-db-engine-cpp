@@ -3,16 +3,26 @@ A lightweight CLI-based database engine built in C++ that supports dynamic schem
 
 <hr>
 
-## 🚀 Features
-- Create and manage tables
-- Insert, update, and delete records (soft delete)
-- Multi-condition query support (AND queries)
-- Schema-aware query validation
-- Limit results using "LIMIT"
-- View table schema using "DESCRIBE"
-- List all tables using "SHOW TABLES"
-- Drop tables ("DROP TABLE")
+## 🚀 Overview
+MiniDB is a simple database engine that supports:
+- Dynamic table schemas
+- Insert, delete, and query operations
+- Multi-condition filtering (AND queries)
+- File-based persistent storage
+- Custom CLI interface
+
+It is designed to demonstrate core database concepts like indexing, schema validation, and storage handling.
+
+<hr>
+
+## ✨ Features
+- Dynamic schema support (no fixed struct)
+- Query by column with multiple conditions (AND)
+- Soft delete (isActive flag)
 - Formatted table output
+- File-based storage (.db + .meta)
+- Basic indexing for faster lookup
+- CLI-based interaction
 
 <hr>
 
@@ -20,6 +30,15 @@ A lightweight CLI-based database engine built in C++ that supports dynamic schem
 - C++
 - File handling (text-based storage)
 - STL (vectors, maps, stringstream)
+
+<hr>
+
+## 📁 Project Structure
+mini-db-engine-cpp/
+│── src/
+│── include/
+│── tests/        # stores database files
+│── README.md
 
 <hr>
 
@@ -34,16 +53,47 @@ id | isActive | column1 | column2 | ...
 
 <hr>
 
-## 📌 Supported Commands
-- create tableName column1 column2 ...
-- insert tableName value1 value2...
-- find tableName column1 value1 column2 value2...
-- update tableName id newValue1 newValue2...
-- delete tableName id
-- describe tableName
-- showTables
-- drop tableName
-- count tableName
+## 💻 CLI Commands
+
+### Create Table
+create students name age city
+
+### Insert Record
+insert students kapil 20 delhi
+
+### List Records
+list students
+
+### Find by Column
+find students name kapil
+
+### Multi-condition Find (AND)
+find students name kapil age 20
+
+### Delete Record
+delete students 3
+
+### Describe Table
+describe students
+
+### Show Tables
+show tables
+
+### Drop Table
+drop students
+
+<hr>
+
+## 📌 Example
+
+MiniDB > insert students kapil 20 delhi  
+Record Inserted  
+
+MiniDB > find students name kapil  
+
+id    name    age    city  
+-----------------------------  
+3     kapil   20     delhi
 
 <hr>
 
@@ -79,6 +129,25 @@ id | isActive | column1 | column2 | ...
 - Query parsing and execution flow
 - Importance of validation and modular design
 - Trade-offs between simplicity and performance
+
+<hr>
+
+## 🛠 How to Run
+
+### 1. Clone the repo
+git clone https://github.com/your-username/mini-db-engine-cpp.git  
+cd mini-db-engine-cpp  
+
+### 2. Compile
+g++ -std=c++17 src/*.cpp -o miniDB
+
+### 3. Run
+./miniDB
+
+<hr>
+
+## 👤 Author
+Kapil Tadkase
 
 
 
