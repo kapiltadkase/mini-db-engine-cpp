@@ -135,21 +135,9 @@ void Storage :: insertRecord(const std::vector<std::string>& values){
         std::cout<< "Schema mismatch! Expected "<<columns.size()<<" values but got "<<values.size()<<"\n";
         return;
    }
-   Record r;
-   r.id = nextId++;
+   
+   int id = nextId++;
    saveMetaData();
-
-   r.isActive = true;
-
-   strcpy(r.name , values[0].c_str());
-
-   try{
-    r.age = std::stoi(values[1]);
-   }
-   catch(...){
-    std::cout<< "Invalid age format\n";
-    return;
-   }
    
    // Text Based Storage
    std::ofstream outFile(filename,std::ios::app);
@@ -159,7 +147,7 @@ void Storage :: insertRecord(const std::vector<std::string>& values){
    }
 
    //Format : id|isActive| values....
-   std::string row = std::to_string(r.id) + "|1";
+   std::string row = std::to_string(id) + "|1";
     
    for(const auto& val : values){
         row += "|" + val;

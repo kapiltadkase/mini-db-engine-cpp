@@ -2,7 +2,6 @@
 #include <cstring> 
 #include <sstream>
 #include <fstream> 
-#include "../include/record.h"
 #include "../include/storage.h"
 #include "../include/database.h"
 
