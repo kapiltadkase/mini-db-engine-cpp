@@ -33,15 +33,6 @@ It is designed to demonstrate core database concepts like indexing, schema valid
 
 <hr>
 
-## 📁 Project Structure
-mini-db-engine-cpp/<br>
-│── src/<br>
-│── include/<br>
-│── tests/        # stores database files<br>
-│── README.md
-
-<hr>
-
 ## 📂 Storage Design
 Each table is stored as:
 
