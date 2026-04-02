@@ -47,7 +47,7 @@ id | isActive | column1 | column2 | ...
 ## 💻 CLI Commands
 
 ### Create Table
-create students name age city
+createTable students name age city
 
 ### Insert Record
 insert students kapil 20 delhi
@@ -68,7 +68,7 @@ delete students 3
 describe students
 
 ### Show Tables
-show tables
+showTables
 
 ### Drop Table
 drop students
