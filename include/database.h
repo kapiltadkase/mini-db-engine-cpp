@@ -20,7 +20,8 @@ class Database{
         Storage* getTable(const std::string& tableName);
         
         void showTables();
-    
+
+        bool dropTable(const std::string& tableName);
         
 };
 

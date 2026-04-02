@@ -79,6 +79,15 @@ int main(){
 
          table->describeTable(tableName);
       }
+      else if(command == "drop"){
+         std::string tableName;
+         if(!(ss>>tableName)){
+            std::cout<<"Usage: drop <tableName>\n";
+            continue;
+         }
+
+         db.dropTable(tableName);
+      }
       else if(command=="list"){
          std::string tableName;
          ss >> tableName;
@@ -86,7 +95,7 @@ int main(){
          Storage* table = db.getTable(tableName);
 
          if(!table){
-            std::cout<<"Table not found\n";
+            std::cout<<"\n";
             continue;
          }
 

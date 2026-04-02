@@ -80,7 +80,7 @@ void Database :: createTable(const std::string& name, const std::vector<std::str
 Storage* Database :: getTable(const std::string& tableName){
 
     if(tables.empty() || tables.find(tableName) == tables.end()){
-        std::cout<<"No table found\n";
+        std::cout<<"Table not found\n";
         return NULL;
     }
 
@@ -111,4 +111,30 @@ void Database :: showTables(){
     for(auto&  name : tableNames){
         std::cout<<name<<"\n";
     }
+}
+
+bool Database :: dropTable(const std::string& tableName){
+    if(tables.find(tableName) ==tables.end()){
+        std::cout<<"Table not found\n";
+        return false;
+    }
+
+    std::string basePath = "tests/";
+
+    std::string dbFile = basePath + tableName + ".db";
+    std::string metaFile = basePath + tableName + ".meta";
+
+    if(std::remove(dbFile.c_str()) != 0){
+        std::cout<<"Error deleting data file\n";
+    }
+
+    if(std::remove(metaFile.c_str()) != 0){
+        std::cout<<"Error deleting meta file\n";
+    }
+
+    delete tables[tableName];
+    tables.erase(tableName);
+
+    std::cout<<"Table dropped successfully\n";
+    return true;
 }
