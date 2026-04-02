@@ -34,10 +34,10 @@ It is designed to demonstrate core database concepts like indexing, schema valid
 <hr>
 
 ## 📁 Project Structure
-mini-db-engine-cpp/
-│── src/
-│── include/
-│── tests/        # stores database files
+mini-db-engine-cpp/<br>
+│── src/<br>
+│── include/<br>
+│── tests/        # stores database files<br>
 │── README.md
 
 <hr>
@@ -81,19 +81,6 @@ show tables
 
 ### Drop Table
 drop students
-
-<hr>
-
-## 📌 Example
-
-MiniDB > insert students kapil 20 delhi  
-Record Inserted  
-
-MiniDB > find students name kapil  
-
-id    name    age    city  
------------------------------  
-3     kapil   20     delhi
 
 <hr>
 
