@@ -113,7 +113,7 @@ drop students
 ## 🛠 How to Run
 
 ### 1. Clone the repo
-git clone https://github.com/your-username/mini-db-engine-cpp.git  
+git clone https://github.com/kapiltadkase/mini-db-engine-cpp.git 
 cd mini-db-engine-cpp  
 
 ### 2. Compile
