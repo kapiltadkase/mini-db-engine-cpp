@@ -47,31 +47,40 @@ id | isActive | column1 | column2 | ...
 ## 💻 CLI Commands
 
 ### Create Table
-createTable students name age city
+createTable tablename column1_name column2_name.............
 
 ### Insert Record
-insert students kapil 20 delhi
+insert tableName value1 value2 ............
 
 ### List Records
-list students
+list tableName
 
 ### Find by Column
-find students name kapil
+find tableName column value
 
 ### Multi-condition Find (AND)
-find students name kapil age 20
+find tableName column1 value1 column2 value2 ............
 
 ### Delete Record
-delete students 3
+delete tableName index
 
-### Describe Table
-describe students
+### Describe Schema of Table
+describe tableName
 
 ### Show Tables
 showTables
 
 ### Drop Table
-drop students
+drop tableName
+
+### Read an entry
+read tableName index
+
+### Count the number of total and active entries
+count tableName
+
+### Update an entry
+update tableName index value1 value2 .......
 
 <hr>
 
